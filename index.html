@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPortal - Find Your Next Career</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+        }
+        /* Style for the translucent-blur navbar */
+        .navbar-blur {
+            background-color: rgba(255, 255, 255, 0.7); /* Translucent white */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+        }
+        /* Custom scrollbar for modal */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
+            border-radius: 10px;
+        }
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- ===== Navigation Bar ===== -->
+    <nav class="navbar-blur fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Title -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <!-- Simple Logo SVG -->
+                    <svg class="h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    <span class="font-bold text-2xl text-blue-700">JobPortal</span>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="hidden md:block flex-1 max-w-lg mx-4">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input id="search-input" type="text" class="block w-full bg-white bg-opacity-70 border border-gray-300 rounded-full py-2 pl-10 pr-4 leading-5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Search jobs, keywords...">
+                    </div>
+                </div>
+
+                <!-- Login/User Area -->
+                <div id="user-auth-links" class="flex items-center gap-4">
+                    <!-- This will be populated by JS -->
+                    <button id="login-nav-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Search Bar -->
+        <div class="md:hidden p-4 border-t border-gray-200">
+            <input id="search-input-mobile" type="text" class="block w-full bg-white bg-opacity-70 border border-gray-300 rounded-full py-2 px-4 leading-5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search jobs...">
+        </div>
+    </nav>
+
+    <!-- ===== Main Content ===== -->
+    <main class="pt-28 md:pt-20"> <!-- Adjust padding-top for fixed navbar height -->
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Filters -->
+            <section id="filters" class="mb-8 p-6 bg-white rounded-lg shadow-md">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Filter: Job Type -->
+                    <div>
+                        <label for="filter-type" class="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
+                        <select id="filter-type" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="all">All Types</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                    </div>
+                    <!-- Filter: Location -->
+                    <div>
+                        <label for="filter-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <select id="filter-location" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="all">All Locations</option>
+                            <option value="New York, NY">New York, NY</option>
+                            <option value="San Francisco, CA">San Francisco, CA</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Austin, TX">Austin, TX</option>
+                            <option value="Chicago, IL">Chicago, IL</option>
+                        </select>
+                    </div>
+                    <!-- Filter: Experience Level -->
+                    <div>
+                        <label for="filter-experience" class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                        <select id="filter-experience" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="all">All Levels</option>
+                            <option value="Entry-level">Entry-level</option>
+                            <option value="Mid-level">Mid-level</option>
+                            <option value="Senior-level">Senior-level</option>
+                        </select>
+                    </div>
+                    <!-- Filter: Clear Button -->
+                    <div class="flex items-end">
+                        <button id="clear-filters-btn" class="w-full sm:w-auto bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Job Listings -->
+            <section id="job-listings-container">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Featured Jobs</h2>
+                <div id="job-listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Job cards will be dynamically inserted here by JS -->
+                </div>
+                <p id="no-jobs-message" class="hidden text-center text-gray-500 mt-8">No jobs found matching your criteria.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== Login Modal ===== -->
+    <div id="login-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md mx-4">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Login</h2>
+                <button id="close-login-modal-btn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== Job Detail Modal ===== -->
+    <div id="job-detail-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden">
+        <!-- Backdrop -->
+        <div id="modal-backdrop" class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></div>
+        
+        <!-- Modal Content -->
+        <div id="modal-content" class="modal-content relative bg-white rounded-lg shadow-2xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
+            <button id="close-job-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
+                <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <!-- Content will be populated by JS -->
+            <div id="modal-content-details" class="p-8 md:p-12">
+                <!-- Dynamic Job Details Here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Custom Alert Modal ===== -->
+    <div id="alert-modal" class="fixed inset-0 z-[70] flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm mx-4 text-center">
+            <h3 id="alert-title" class="text-lg font-medium text-gray-900 mb-2">Login Failed</h3>
+            <p id="alert-message" class="text-sm text-gray-600 mb-4">Invalid username or password.</p>
+            <button id="alert-close-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. DATA ---
+
+            // Predefined users
+            const users = [
+                { username: 'adi', password: '123', type: 'Admin' },
+                { username: 'pratham', password: 'deep', type: 'Job Seeker' },
+                { username: 'poornima', password: 'poornima@123', type: 'Recruiter' }
+            ];
+
+            // Example job data (10 jobs)
+            const allJobs = [
+                {
+                    id: 1,
+                    title: 'Senior Frontend Developer',
+                    company: 'TechCorp',
+                    logo: 'https://placehold.co/100x100/4299E1/white?text=T',
+                    location: 'New York, NY',
+                    type: 'Full-time',
+                    experience: 'Senior-level',
+                    description: 'Lead the development of our next-generation web applications. You will be responsible for building responsive, high-performance UIs using React and TypeScript.',
+                    responsibilities: [
+                        'Develop new user-facing features using React.js',
+                        'Build reusable components and front-end libraries',
+                        'Optimize components for maximum performance',
+                        'Collaborate with designers and backend engineers'
+                    ],
+                    qualifications: [
+                        '5+ years of experience with JavaScript, HTML, and CSS',
+                        '3+ years of experience with React',
+                        'Strong understanding of REST APIs',
+                        'Experience with TypeScript and state management (Redux/Context)'
+                    ]
+                },
+                {
+                    id: 2,
+                    title: 'UX/UI Designer',
+                    company: 'DesignFlow',
+                    logo: 'https://placehold.co/100x100/F56565/white?text=D',
+                    location: 'Remote',
+                    type: 'Contract',
+                    experience: 'Mid-level',
+                    description: 'Join our creative team to design intuitive and engaging user experiences for mobile and web platforms.',
+                    responsibilities: [
+                        'Create wireframes, storyboards, and user flows',
+                        'Design graphic user interface elements, like menus, tabs, and widgets',
+                        'Develop UI mockups and prototypes',
+                        'Conduct layout adjustments based on user feedback'
+                    ],
+                    qualifications: [
+                        'Proven UX/UI design experience with a strong portfolio',
+                        'Proficiency in Figma, Sketch, or Adobe XD',
+                        'Excellent visual design skills',
+                        'Understanding of user-centered design principles'
+                    ]
+                },
+                {
+                    id: 3,
+                    title: 'Backend Engineer (Node.js)',
+                    company: 'ServerSide Solutions',
+                    logo: 'https://placehold.co/100x100/48BB78/white?text=S',
+                    location: 'Austin, TX',
+                    type: 'Full-time',
+                    experience: 'Mid-level',
+                    description: 'Build and maintain scalable backend services, APIs, and microservices using Node.js and AWS.',
+                    responsibilities: [
+                        'Design and implement RESTful APIs',
+                        'Manage database schemas (PostgreSQL/MongoDB)',
+                        'Deploy and manage services on AWS',
+                        'Write efficient, reusable, and testable code'
+                    ],
+                    qualifications: [
+                        '3+ years of backend development experience',
+                        'Strong proficiency in Node.js and Express.js',
+                        'Experience with cloud platforms (AWS preferred)',
+                        'Knowledge of database systems'
+                    ]
+                },
+                {
+                    id: 4,
+                    title: 'Digital Marketing Intern',
+                    company: 'GrowFast',
+                    logo: 'https://placehold.co/100x100/ED8936/white?text=G',
+                    location: 'Chicago, IL',
+                    type: 'Internship',
+                    experience: 'Entry-level',
+                    description: 'A great opportunity for a marketing student to gain hands-on experience in SEO, SEM, and social media campaigns.',
+                    responsibilities: [
+                        'Assist with social media content creation',
+                        'Help manage PPC campaigns on Google Ads',
+                        'Conduct keyword research for SEO',
+                        'Analyze marketing data and prepare reports'
+                    ],
+                    qualifications: [
+                        'Currently enrolled in a Marketing or related degree program',
+                        'Strong written and verbal communication skills',
+                        'Eagerness to learn and a positive attitude',
+                        'Familiarity with social media platforms'
+                    ]
+                },
+                {
+                    id: 5,
+                    title: 'Product Manager',
+                    company: 'Innovate Inc.',
+                    logo: 'https://placehold.co/100x100/9F7AEA/white?text=I',
+                    location: 'San Francisco, CA',
+                    type: 'Full-time',
+                    experience: 'Senior-level',
+                    description: 'Define the product vision, strategy, and roadmap. You will work cross-functionally to deliver products that our customers love.',
+                    responsibilities: [
+                        'Develop and maintain the product roadmap',
+                        'Gather and prioritize product requirements',
+                        'Work closely with engineering, design, and marketing',
+                        'Analyze market trends and competitor activity'
+                    ],
+                    qualifications: [
+                        '5+ years of product management experience',
+                        'Proven track record of managing all aspects of a product lifecycle',
+                        'Strong analytical and problem-solving skills',
+                        'Excellent communication and leadership abilities'
+                    ]
+                },
+                {
+                    id: 6,
+                    title: 'Customer Support Specialist',
+                    company: 'HelpDesk Heroes',
+                    logo: 'https://placehold.co/100x100/38B2AC/white?text=H',
+                    location: 'Remote',
+                    type: 'Part-time',
+                    experience: 'Entry-level',
+                    description: 'Be the first point of contact for our users, providing friendly and efficient support via email and chat.',
+                    responsibilities: [
+                        'Respond to customer inquiries in a timely manner',
+                        'Troubleshoot and resolve product issues',
+                        'Document customer interactions in our CRM',
+                        'Escalate complex issues to the technical team'
+                    ],
+                    qualifications: [
+                        'Excellent communication skills',
+                        'Patient and empathetic attitude',
+                        'Ability to work independently',
+                        'Prior customer service experience is a plus'
+                    ]
+                },
+                {
+                    id: 7,
+                    title: 'Data Scientist',
+                    company: 'DataDrive',
+                    logo: 'https://placehold.co/100x100/ECC94B/white?text=D',
+                    location: 'New York, NY',
+                    type: 'Full-time',
+                    experience: 'Mid-level',
+                    description: 'Analyze large datasets to uncover insights, build predictive models, and help drive business decisions.',
+                    responsibilities: [
+                        'Clean and preprocess data for analysis',
+                        'Build and train machine learning models',
+                        'Create data visualizations and dashboards',
+                        'Present findings to stakeholders'
+                    ],
+                    qualifications: [
+                        'Degree in Computer Science, Statistics, or related field',
+                        'Proficiency in Python (Pandas, Scikit-learn)',
+                        'Strong knowledge of SQL',
+                        'Experience with BI tools (Tableau, Power BI)'
+                    ]
+                },
+                {
+                    id: 8,
+                    title: 'IT Support Technician',
+                    company: 'TechCorp',
+                    logo: 'https://placehold.co/100x100/4299E1/white?text=T',
+                    location: 'Chicago, IL',
+                    type: 'Contract',
+                    experience: 'Entry-level',
+                    description: 'Provide internal IT support to our employees, troubleshooting hardware, software, and network issues.',
+                    responsibilities: [
+                        'Set up workstations for new employees',
+                        'Respond to IT support tickets',
+                        'Install and configure software and hardware',
+                        'Maintain inventory of IT assets'
+                    ],
+                    qualifications: [
+                        '1+ years of IT support experience',
+                        'Knowledge of Windows and macOS operating systems',
+                        'Basic understanding of computer networks',
+                        'Strong problem-solving skills'
+                    ]
+                },
+                {
+                    id: 9,
+                    title: 'Cloud Solutions Architect',
+                    company: 'ServerSide Solutions',
+                    logo: 'https://placehold.co/100x100/48BB78/white?text=S',
+                    location: 'Austin, TX',
+                    type: 'Full-time',
+                    experience: 'Senior-level',
+                    description: 'Design and implement scalable, secure, and robust cloud infrastructure on AWS and Azure.',
+                    responsibilities: [
+                        'Design cloud architecture for new applications',
+                        'Migrate on-premise infrastructure to the cloud',
+                        'Optimize cloud spending and performance',
+                        'Ensure security and compliance best practices'
+                    ],
+                    qualifications: [
+                        '5+ years of cloud engineering experience',
+                        'Deep expertise in AWS or Azure',
+                        'Experience with IaC (Terraform, CloudFormation)',
+                        'Relevant cloud certifications (e.g., AWS Solutions Architect)'
+                    ]
+                },
+                {
+                    id: 10,
+                    title: 'Junior Web Developer',
+                    company: 'DesignFlow',
+                    logo: 'https://placehold.co/100x100/F56565/white?text=D',
+                    location: 'Remote',
+                    type: 'Full-time',
+                    experience: 'Entry-level',
+                    description: 'Exciting entry-level role to help build and maintain websites for our clients. Great learning environment.',
+                    responsibilities: [
+                        'Write clean, valid HTML, CSS, and JavaScript',
+                        'Assist senior developers with larger projects',
+                        'Test and debug websites across browsers',
+                        'Update and maintain existing client websites'
+                    ],
+                    qualifications: [
+                        'Portfolio of web projects (school or personal)',
+                        'Solid understanding of HTML, CSS, and JavaScript',
+                        'Familiarity with a framework (React, Vue) is a plus',
+                        'Strong desire to learn and grow'
+                    ]
+                }
+            ];
+
+            let currentUser = null;
+
+            // --- 2. DOM Elements ---
+            const userAuthLinks = document.getElementById('user-auth-links');
+            const loginNavBtn = document.getElementById('login-nav-btn');
+            const loginModal = document.getElementById('login-modal');
+            const closeLoginModalBtn = document.getElementById('close-login-modal-btn');
+            const loginForm = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+
+            const jobListingsContainer = document.getElementById('job-listings');
+            const noJobsMessage = document.getElementById('no-jobs-message');
+
+            const jobDetailModal = document.getElementById('job-detail-modal');
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const closeJobModalBtn = document.getElementById('close-job-modal-btn');
+            const modalContentDetails = document.getElementById('modal-content-details');
+            
+            const alertModal = document.getElementById('alert-modal');
+            const alertMessage = document.getElementById('alert-message');
+            const alertCloseBtn = document.getElementById('alert-close-btn');
+
+            const searchInput = document.getElementById('search-input');
+            const searchInputMobile = document.getElementById('search-input-mobile');
+            const filterType = document.getElementById('filter-type');
+            const filterLocation = document.getElementById('filter-location');
+            const filterExperience = document.getElementById('filter-experience');
+            const clearFiltersBtn = document.getElementById('clear-filters-btn');
+
+            // --- 3. CORE FUNCTIONS ---
+
+            /**
+             * Initializes the application
+             */
+            function init() {
+                checkSession();
+                renderJobs(allJobs);
+                attachEventListeners();
+            }
+
+            /**
+             * Checks for a user in sessionStorage
+             */
+            function checkSession() {
+                const user = JSON.parse(sessionStorage.getItem('currentUser'));
+                if (user) {
+                    currentUser = user;
+                    updateNavbar(true);
+                } else {
+                    updateNavbar(false);
+                }
+            }
+
+            /**
+             * Updates the navbar based on login state
+             * @param {boolean} isLoggedIn - The user's login status
+             */
+            function updateNavbar(isLoggedIn) {
+                if (isLoggedIn) {
+                    userAuthLinks.innerHTML = `
+                        <span class="font-medium text-gray-700 hidden sm:block">
+                            Welcome, <span class="font-bold text-blue-600">${currentUser.username}</span> (${currentUser.type})
+                        </span>
+                        <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-full font-medium hover:bg-red-600 transition-colors">
+                            Logout
+                        </button>
+                    `;
+                    // Add listener to the new logout button
+                    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+                } else {
+                    userAuthLinks.innerHTML = `
+                        <button id="login-nav-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                            Login
+                        </button>
+                    `;
+                    // Add listener to the new login button
+                    document.getElementById('login-nav-btn').addEventListener('click', openLoginModal);
+                }
+            }
+
+            /**
+             * Handles the login form submission
+             * @param {Event} e - The form submit event
+             */
+            function handleLogin(e) {
+                e.preventDefault();
+                const username = usernameInput.value;
+                const password = passwordInput.value;
+                
+                const user = users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    updateNavbar(true);
+                    closeLoginModal();
+                    loginForm.reset();
+                } else {
+                    showAlert('Invalid Username or Password');
+                }
+            }
+
+            /**
+             * Handles user logout
+             */
+            function handleLogout() {
+                currentUser = null;
+                sessionStorage.removeItem('currentUser');
+                updateNavbar(false);
+            }
+
+            /**
+             * Renders the list of jobs to the DOM
+             * @param {Array} jobs - An array of job objects to render
+             */
+            function renderJobs(jobs) {
+                jobListingsContainer.innerHTML = '';
+                
+                if (jobs.length === 0) {
+                    noJobsMessage.classList.remove('hidden');
+                    return;
+                }
+
+                noJobsMessage.classList.add('hidden');
+
+                jobs.forEach(job => {
+                    const jobCard = document.createElement('div');
+                    jobCard.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col justify-between';
+                    jobCard.dataset.jobId = job.id;
+                    
+                    jobCard.innerHTML = `
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center gap-4">
+                                    <img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 rounded-full object-cover border">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">${job.title}</h3>
+                                        <p class="text-gray-600">${job.company}</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-semibold ${job.type === 'Full-time' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'} px-2.5 py-0.5 rounded-full">${job.type}</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433.57.57 0 00.28.14l.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" /></svg>
+                                    ${job.location}
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.75.75 0 01-.318-1.464 3.5 3.5 0 014.622-3.18l.866-1.5a.75.75 0 011.3.75l-.866 1.5.866 1.5a.75.75 0 01-1.3.75l-.866-1.5a3.5 3.5 0 01-4.622 3.18zM16 8a2 2 0 11-4 0 2 2 0 014 0zm4.51 7.326a.75.75 0 01-1.3.75l-.866-1.5-.866 1.5a.75.75 0 01-1.3-.75l.866-1.5-.866-1.5a.75.75 0 011.3-.75l.866 1.5.866-1.5a.75.75 0 011.3.75l-.866 1.5a3.5 3.5 0 014.622 3.18.75.75 0 01-.318 1.464z" /></svg>
+                                    ${job.experience}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-6">${job.description.substring(0, 100)}...</p>
+                        </div>
+                        <button class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors apply-btn">
+                            Apply Now
+                        </button>
+                    `;
+                    
+                    // Add click listener to the card (but not the button)
+                    jobCard.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('apply-btn')) {
+                            openJobModal(job.id);
+                        }
+                    });
+
+                    // Add click listener to the Apply button
+                    jobCard.querySelector('.apply-btn').addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent card click
+                        handleApply(job.id);
+                    });
+                    
+                    jobListingsContainer.appendChild(jobCard);
+                });
+            }
+
+            /**
+             * Opens the job detail modal with specific job info
+             * @param {number} jobId - The ID of the job to display
+             */
+            function openJobModal(jobId) {
+                const job = allJobs.find(j => j.id === jobId);
+                if (!job) return;
+
+                modalContentDetails.innerHTML = `
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="${job.logo}" alt="${job.company} logo" class="w-16 h-16 rounded-full object-cover border">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-900">${job.title}</h2>
+                            <p class="text-xl text-gray-700">${job.company}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-6">
+                        <span class="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433.57.57 0 00.28.14l.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" /></svg>
+                            ${job.location}
+                        </span>
+                        <span class="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" /></svg>
+                            ${job.type}
+                        </span>
+                        <span class="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.75.75 0 01-.318-1.464 3.5 3.5 0 014.622-3.18l.866-1.5a.75.75 0 011.3.75l-.866 1.5.866 1.5a.75.75 0 01-1.3.75l-.866-1.5a3.5 3.5 0 01-4.622 3.18zM16 8a2 2 0 11-4 0 2 2 0 014 0zm4.51 7.326a.75.75 0 01-1.3.75l-.866-1.5-.866 1.5a.75.75 0 01-1.3-.75l.866-1.5-.866-1.5a.75.75 0 011.3-.75l.866 1.5.866-1.5a.75.75 0 011.3.75l-.866 1.5a3.5 3.5 0 014.622 3.18.75.75 0 01-.318 1.464z" /></svg>
+                            ${job.experience}
+                        </span>
+                    </div>
+
+                    <div class="space-y-6 text-gray-700">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Job Description</h4>
+                            <p>${job.description}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Responsibilities</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                ${job.responsibilities.map(r => `<li>${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Qualifications</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                ${job.qualifications.map(q => `<li>${q}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t">
+                        <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors" onclick="handleApply(${job.id})">
+                            Apply for this Job
+                        </button>
+                    </div>
+                `;
+
+                jobDetailModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+
+            /**
+             * Closes the job detail modal
+             */
+            function closeJobModal() {
+                jobDetailModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }
+
+            /**
+             * Handles the "Apply" button click
+             * @param {number} jobId - The ID of the job to apply for
+             */
+            window.handleApply = function(jobId) {
+                const job = allJobs.find(j => j.id === jobId);
+                if (currentUser) {
+                    if (currentUser.type === 'Job Seeker') {
+                        showAlert(`Applied for ${job.title} as ${currentUser.username}!`, 'Application Successful');
+                    } else {
+                        showAlert('Only "Job Seeker" accounts can apply for jobs.', 'Application Info');
+                    }
+                } else {
+                    showAlert('You must be logged in as a Job Seeker to apply.', 'Login Required');
+                    if (!loginModal.classList.contains('hidden')) {
+                        closeLoginModal(); // Close login if open
+                    }
+                    if (!jobDetailModal.classList.contains('hidden')) {
+                        closeJobModal(); // Close job detail if open
+                    }
+                    setTimeout(openLoginModal, 200); // Open login modal after a short delay
+                }
+            }
+
+
+            /**
+             * Filters and searches jobs based on user input
+             */
+            function applyFiltersAndSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const searchTermMobile = searchInputMobile.value.toLowerCase();
+                const combinedSearch = searchTerm || searchTermMobile;
+                
+                const type = filterType.value;
+                const location = filterLocation.value;
+                const experience = filterExperience.value;
+
+                const filteredJobs = allJobs.filter(job => {
+                    const matchesSearch = job.title.toLowerCase().includes(combinedSearch) || 
+                                          job.company.toLowerCase().includes(combinedSearch) ||
+                                          job.description.toLowerCase().includes(combinedSearch);
+                    
+                    const matchesType = type === 'all' || job.type === type;
+                    const matchesLocation = location === 'all' || job.location === location;
+                    const matchesExperience = experience === 'all' || job.experience === experience;
+
+                    return matchesSearch && matchesType && matchesLocation && matchesExperience;
+                });
+
+                renderJobs(filteredJobs);
+            }
+
+            /**
+             * Clears all filters and re-renders all jobs
+             */
+            function clearFilters() {
+                searchInput.value = '';
+                searchInputMobile.value = '';
+                filterType.value = 'all';
+                filterLocation.value = 'all';
+                filterExperience.value = 'all';
+                renderJobs(allJobs);
+            }
+
+            // --- 4. Modal Helper Functions ---
+
+            function openLoginModal() {
+                loginModal.classList.remove('hidden');
+            }
+
+            function closeLoginModal() {
+                loginModal.classList.add('hidden');
+            }
+
+            function showAlert(message, title = 'Alert') {
+                document.getElementById('alert-title').textContent = title;
+                alertMessage.textContent = message;
+                alertModal.classList.remove('hidden');
+            }
+
+            function closeAlert() {
+                alertModal.classList.add('hidden');
+            }
+
+            // --- 5. Event Listeners ---
+            function attachEventListeners() {
+                // Initial login button (if not logged in)
+                if (loginNavBtn) {
+                    loginNavBtn.addEventListener('click', openLoginModal);
+                }
+                
+                // Login Modal
+                closeLoginModalBtn.addEventListener('click', closeLoginModal);
+                loginForm.addEventListener('submit', handleLogin);
+                
+                // Job Detail Modal
+                modalBackdrop.addEventListener('click', closeJobModal);
+                closeJobModalBtn.addEventListener('click', closeJobModal);
+                
+                // Alert Modal
+                alertCloseBtn.addEventListener('click', closeAlert);
+
+                // Filters and Search
+                searchInput.addEventListener('input', applyFiltersAndSearch);
+                searchInputMobile.addEventListener('input', applyFiltersAndSearch);
+                filterType.addEventListener('change', applyFiltersAndSearch);
+                filterLocation.addEventListener('change', applyFiltersAndSearch);
+                filterExperience.addEventListener('change', applyFiltersAndSearch);
+                clearFiltersBtn.addEventListener('click', clearFilters);
+            }
+
+            // --- Run the app ---
+            init();
+        });
+    </script>
+
+</body>
+</html>
