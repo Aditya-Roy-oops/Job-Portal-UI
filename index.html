@@ -3,25 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobPortal - Find Your Next Career</title>
+    <title>JobPortal - Find Your Dream Job</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Custom styles */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa; /* Light gray background */
+            background-color: #f7faff; /* Lighter, cooler gray background */
         }
         /* Style for the translucent-blur navbar */
         .navbar-blur {
-            background-color: rgba(255, 255, 255, 0.7); /* Translucent white */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+            background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* Safari support */
+            border-bottom: 1px solid rgba(200, 200, 200, 0.2);
+        }
+        /* Hero Section Gradient */
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         /* Custom scrollbar for modal */
         .modal-content::-webkit-scrollbar {
@@ -38,9 +42,13 @@
         .modal-content::-webkit-scrollbar-thumb:hover {
             background: #888;
         }
+        /* Smooth transition for hover effects */
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 
     <!-- ===== Navigation Bar ===== -->
     <nav class="navbar-blur fixed top-0 left-0 right-0 z-50 shadow-sm">
@@ -55,89 +63,105 @@
                     <span class="font-bold text-2xl text-blue-700">JobPortal</span>
                 </div>
                 
-                <!-- Search Bar -->
-                <div class="hidden md:block flex-1 max-w-lg mx-4">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <input id="search-input" type="text" class="block w-full bg-white bg-opacity-70 border border-gray-300 rounded-full py-2 pl-10 pr-4 leading-5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Search jobs, keywords...">
-                    </div>
-                </div>
-
                 <!-- Login/User Area -->
-                <div id="user-auth-links" class="flex items-center gap-4">
+                <div id="user-auth-links" class="flex-1 flex justify-end items-center gap-4">
                     <!-- This will be populated by JS -->
-                    <button id="login-nav-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                    <button id="login-nav-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors-300">
                         Login
                     </button>
                 </div>
             </div>
         </div>
-        <!-- Mobile Search Bar -->
-        <div class="md:hidden p-4 border-t border-gray-200">
-            <input id="search-input-mobile" type="text" class="block w-full bg-white bg-opacity-70 border border-gray-300 rounded-full py-2 px-4 leading-5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search jobs...">
-        </div>
     </nav>
 
     <!-- ===== Main Content ===== -->
-    <main class="pt-28 md:pt-20"> <!-- Adjust padding-top for fixed navbar height -->
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            
-            <!-- Filters -->
-            <section id="filters" class="mb-8 p-6 bg-white rounded-lg shadow-md">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Filter: Job Type -->
-                    <div>
-                        <label for="filter-type" class="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
-                        <select id="filter-type" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option value="all">All Types</option>
-                            <option value="Full-time">Full-time</option>
-                            <option value="Part-time">Part-time</option>
-                            <option value="Contract">Contract</option>
-                            <option value="Internship">Internship</option>
-                        </select>
-                    </div>
-                    <!-- Filter: Location -->
-                    <div>
-                        <label for="filter-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                        <select id="filter-location" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option value="all">All Locations</option>
-                            <option value="New York, NY">New York, NY</option>
-                            <option value="San Francisco, CA">San Francisco, CA</option>
-                            <option value="Remote">Remote</option>
-                            <option value="Austin, TX">Austin, TX</option>
-                            <option value="Chicago, IL">Chicago, IL</option>
-                        </select>
-                    </div>
-                    <!-- Filter: Experience Level -->
-                    <div>
-                        <label for="filter-experience" class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
-                        <select id="filter-experience" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option value="all">All Levels</option>
-                            <option value="Entry-level">Entry-level</option>
-                            <option value="Mid-level">Mid-level</option>
-                            <option value="Senior-level">Senior-level</option>
-                        </select>
-                    </div>
-                    <!-- Filter: Clear Button -->
-                    <div class="flex items-end">
-                        <button id="clear-filters-btn" class="w-full sm:w-auto bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors">
-                            Clear Filters
+    <main class="pt-16"> <!-- Adjusted padding-top for fixed navbar height -->
+        
+        <!-- ===== Hero Section ===== -->
+        <section class="hero-gradient text-white py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Find Your Dream Job</h1>
+                <p class="text-lg md:text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">Browse thousands of job openings from top companies and find your next career move.</p>
+                <div class="max-w-3xl mx-auto">
+                    <!-- Search bar and Filter button container -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <!-- Search Bar -->
+                        <div class="relative flex-grow">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input id="search-input" type="text" class="block w-full bg-white border border-gray-300 rounded-full py-3.5 pl-12 pr-4 text-gray-900 leading-5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Search by job title, keyword, or company...">
+                        </div>
+                        <!-- Filter Button -->
+                        <button id="hero-filter-btn" class="flex-shrink-0 bg-white bg-opacity-90 text-blue-700 px-6 py-3.5 rounded-full font-medium hover:bg-opacity-100 transition-all-300 flex items-center justify-center gap-2">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601l.247.04c.271.041.5.284.5.569v.643a.5.5 0 01-.5.569l-.247.04C14.973 3.794 12.51 4 10 4s-4.973-.206-7.372-.601l-.247-.04a.5.5 0 01-.5-.569v-.643c0-.285.229-.528.5-.569l.247-.04zM10 6c2.51 0 4.973.206 7.372.601l.247.04c.271.041.5.284.5.569v.643a.5.5 0 01-.5.569l-.247.04C14.973 8.794 12.51 9 10 9s-4.973-.206-7.372-.601l-.247-.04a.5.5 0 01-.5-.569v-.643c0-.285.229-.528.5-.569l.247-.04C5.028 6.206 7.49 6 10 6zm0 5c2.51 0 4.973.206 7.372.601l.247.04c.271.041.5.284.5.569v.643a.5.5 0 01-.5.569l-.247.04C14.973 13.794 12.51 14 10 14s-4.973-.206-7.372-.601l-.247-.04a.5.5 0 01-.5-.569v-.643c0-.285.229-.528.5-.569l.247-.04C5.028 11.206 7.49 11 10 11zm0 5c2.51 0 4.973.206 7.372.601l.247.04c.271.041.5.284.5.569v.643a.5.5 0 01-.5.569l-.247.04C14.973 18.794 12.51 19 10 19s-4.973-.206-7.372-.601l-.247-.04a.5.5 0 01-.5-.569v-.643c0-.285.229-.528.5-.569l.247-.04C5.028 16.206 7.49 16 10 16z" clip-rule="evenodd" /></svg>
+                            Filters
                         </button>
                     </div>
+                
+                    <!-- Filters Dropdown -->
+                    <div id="hero-filters-dropdown" class="hidden mt-4 bg-white rounded-xl shadow-2xl p-6 text-left max-w-3xl mx-auto">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Filter: Job Type -->
+                            <div>
+                                <label for="filter-type" class="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
+                                <select id="filter-type" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="all">All Types</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Internship">Internship</option>
+                                </select>
+                            </div>
+                            <!-- Filter: Location -->
+                            <div>
+                                <label for="filter-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <select id="filter-location" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="all">All Locations</option>
+                                    <option value="New York, NY">New York, NY</option>
+                                    <option value="San Francisco, CA">San Francisco, CA</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Austin, TX">Austin, TX</option>
+                                    <option value="Chicago, IL">Chicago, IL</option>
+                                </select>
+                            </div>
+                            <!-- Filter: Experience Level -->
+                            <div>
+                                <label for="filter-experience" class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                                <select id="filter-experience" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="all">All Levels</option>
+                                    <option value="Entry-level">Entry-level</option>
+                                    <option value="Mid-level">Mid-level</option>
+                                    <option value="Senior-level">Senior-level</option>
+                                </select>
+                            </div>
+                            <!-- Filter: Clear Button -->
+                            <div class="flex items-end">
+                                <button id="clear-filters-btn" class="w-full sm:w-auto bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-all-300">
+                                    Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </div>
+        </section>
+
+        <!-- ===== Filters & Job Listings ===== -->
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- Filters -->
+            <!-- This section is now removed from here -->
 
             <!-- Job Listings -->
             <section id="job-listings-container">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Featured Jobs</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Featured Jobs</h2>
                 <div id="job-listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Job cards will be dynamically inserted here by JS -->
                 </div>
-                <p id="no-jobs-message" class="hidden text-center text-gray-500 mt-8">No jobs found matching your criteria.</p>
+                <p id="no-jobs-message" class="hidden text-center text-gray-500 mt-8 text-lg">No jobs found matching your criteria.</p>
             </section>
 
         </div>
@@ -165,12 +189,86 @@
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-all-300">
                     Sign In
                 </button>
             </form>
         </div>
     </div>
+
+    <!-- ===== Post Job Modal ===== -->
+    <div id="post-job-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm hidden">
+        <div class="modal-content bg-white rounded-lg shadow-2xl p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Post a New Job</h2>
+                <button id="close-post-job-modal-btn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Post Job Form -->
+            <form id="post-job-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="job-title" class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                        <input type="text" id="job-title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                        <input type="text" id="company" name="company" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                </div>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input type="text" id="location" name="location" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., New York, NY or Remote" required>
+                    </div>
+                    <div>
+                        <label for="salary" class="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>
+                        <input type="text" id="salary" name="salary" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., $100k - $120k" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="job-type" class="block text-sm font-medium text-gray-700 mb-1">Job Type</label>
+                        <select id="job-type" name="type" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="experience" class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                        <select id="experience" name="experience" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                            <option value="Entry-level">Entry-level</option>
+                            <option value="Mid-level">Mid-level</option>
+                            <option value="Senior-level">Senior-level</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="description" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                </div>
+                <div>
+                    <label for="responsibilities" class="block text-sm font-medium text-gray-700 mb-1">Responsibilities (comma-separated)</label>
+                    <input type="text" id="responsibilities" name="responsibilities" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Develop features, Fix bugs" required>
+                </div>
+                <div>
+                    <label for="qualifications" class="block text-sm font-medium text-gray-700 mb-1">Qualifications (comma-separated)</label>
+                    <input type="text" id="qualifications" name="qualifications" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 5+ years React, Strong CSS" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-all-300">
+                    Post Job Listing
+                </button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- ===== Job Detail Modal ===== -->
     <div id="job-detail-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden">
@@ -196,7 +294,7 @@
         <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm mx-4 text-center">
             <h3 id="alert-title" class="text-lg font-medium text-gray-900 mb-2">Login Failed</h3>
             <p id="alert-message" class="text-sm text-gray-600 mb-4">Invalid username or password.</p>
-            <button id="alert-close-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+            <button id="alert-close-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all-300">
                 OK
             </button>
         </div>
@@ -215,6 +313,9 @@
                 { username: 'poornima', password: 'poornima@123', type: 'Recruiter' }
             ];
 
+            // Helper function to get a date X days ago
+            const daysAgo = (days) => new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
             // Example job data (10 jobs)
             const allJobs = [
                 {
@@ -225,6 +326,8 @@
                     location: 'New York, NY',
                     type: 'Full-time',
                     experience: 'Senior-level',
+                    salary: '$140,000 - $170,000',
+                    postedDate: daysAgo(2),
                     description: 'Lead the development of our next-generation web applications. You will be responsible for building responsive, high-performance UIs using React and TypeScript.',
                     responsibilities: [
                         'Develop new user-facing features using React.js',
@@ -247,6 +350,8 @@
                     location: 'Remote',
                     type: 'Contract',
                     experience: 'Mid-level',
+                    salary: '$90/hr - $110/hr',
+                    postedDate: daysAgo(1),
                     description: 'Join our creative team to design intuitive and engaging user experiences for mobile and web platforms.',
                     responsibilities: [
                         'Create wireframes, storyboards, and user flows',
@@ -269,6 +374,8 @@
                     location: 'Austin, TX',
                     type: 'Full-time',
                     experience: 'Mid-level',
+                    salary: '$110,000 - $130,000',
+                    postedDate: daysAgo(5),
                     description: 'Build and maintain scalable backend services, APIs, and microservices using Node.js and AWS.',
                     responsibilities: [
                         'Design and implement RESTful APIs',
@@ -291,6 +398,8 @@
                     location: 'Chicago, IL',
                     type: 'Internship',
                     experience: 'Entry-level',
+                    salary: '$20/hr',
+                    postedDate: daysAgo(3),
                     description: 'A great opportunity for a marketing student to gain hands-on experience in SEO, SEM, and social media campaigns.',
                     responsibilities: [
                         'Assist with social media content creation',
@@ -313,6 +422,8 @@
                     location: 'San Francisco, CA',
                     type: 'Full-time',
                     experience: 'Senior-level',
+                    salary: '$160,000 - $190,000',
+                    postedDate: daysAgo(7),
                     description: 'Define the product vision, strategy, and roadmap. You will work cross-functionally to deliver products that our customers love.',
                     responsibilities: [
                         'Develop and maintain the product roadmap',
@@ -335,6 +446,8 @@
                     location: 'Remote',
                     type: 'Part-time',
                     experience: 'Entry-level',
+                    salary: '$25/hr',
+                    postedDate: daysAgo(4),
                     description: 'Be the first point of contact for our users, providing friendly and efficient support via email and chat.',
                     responsibilities: [
                         'Respond to customer inquiries in a timely manner',
@@ -357,6 +470,8 @@
                     location: 'New York, NY',
                     type: 'Full-time',
                     experience: 'Mid-level',
+                    salary: '$130,000 - $150,000',
+                    postedDate: daysAgo(10),
                     description: 'Analyze large datasets to uncover insights, build predictive models, and help drive business decisions.',
                     responsibilities: [
                         'Clean and preprocess data for analysis',
@@ -379,6 +494,8 @@
                     location: 'Chicago, IL',
                     type: 'Contract',
                     experience: 'Entry-level',
+                    salary: '$30/hr - $35/hr',
+                    postedDate: daysAgo(1),
                     description: 'Provide internal IT support to our employees, troubleshooting hardware, software, and network issues.',
                     responsibilities: [
                         'Set up workstations for new employees',
@@ -401,6 +518,8 @@
                     location: 'Austin, TX',
                     type: 'Full-time',
                     experience: 'Senior-level',
+                    salary: '$170,000 - $200,000',
+                    postedDate: daysAgo(8),
                     description: 'Design and implement scalable, secure, and robust cloud infrastructure on AWS and Azure.',
                     responsibilities: [
                         'Design cloud architecture for new applications',
@@ -423,6 +542,8 @@
                     location: 'Remote',
                     type: 'Full-time',
                     experience: 'Entry-level',
+                    salary: '$70,000 - $85,000',
+                    postedDate: daysAgo(6),
                     description: 'Exciting entry-level role to help build and maintain websites for our clients. Great learning environment.',
                     responsibilities: [
                         'Write clean, valid HTML, CSS, and JavaScript',
@@ -440,15 +561,21 @@
             ];
 
             let currentUser = null;
+            let appliedJobs = [];
 
             // --- 2. DOM Elements ---
             const userAuthLinks = document.getElementById('user-auth-links');
             const loginNavBtn = document.getElementById('login-nav-btn');
+            
             const loginModal = document.getElementById('login-modal');
             const closeLoginModalBtn = document.getElementById('close-login-modal-btn');
             const loginForm = document.getElementById('login-form');
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
+
+            const postJobModal = document.getElementById('post-job-modal');
+            const closePostJobModalBtn = document.getElementById('close-post-job-modal-btn');
+            const postJobForm = document.getElementById('post-job-form');
 
             const jobListingsContainer = document.getElementById('job-listings');
             const noJobsMessage = document.getElementById('no-jobs-message');
@@ -463,7 +590,8 @@
             const alertCloseBtn = document.getElementById('alert-close-btn');
 
             const searchInput = document.getElementById('search-input');
-            const searchInputMobile = document.getElementById('search-input-mobile');
+            const heroFilterBtn = document.getElementById('hero-filter-btn');
+            const heroFiltersDropdown = document.getElementById('hero-filters-dropdown');
             const filterType = document.getElementById('filter-type');
             const filterLocation = document.getElementById('filter-location');
             const filterExperience = document.getElementById('filter-experience');
@@ -476,7 +604,7 @@
              */
             function init() {
                 checkSession();
-                renderJobs(allJobs);
+                applyFiltersAndSearch(); // Use this to render initial jobs
                 attachEventListeners();
             }
 
@@ -487,6 +615,9 @@
                 const user = JSON.parse(sessionStorage.getItem('currentUser'));
                 if (user) {
                     currentUser = user;
+                    if (currentUser.type === 'Job Seeker') {
+                        appliedJobs = JSON.parse(sessionStorage.getItem('appliedJobs')) || [];
+                    }
                     updateNavbar(true);
                 } else {
                     updateNavbar(false);
@@ -499,19 +630,33 @@
              */
             function updateNavbar(isLoggedIn) {
                 if (isLoggedIn) {
+                    let postJobButton = '';
+                    if (currentUser.type === 'Admin' || currentUser.type === 'Recruiter') {
+                        postJobButton = `
+                            <button id="post-job-nav-btn" class="bg-green-500 text-white px-4 py-2 rounded-full font-medium hover:bg-green-600 transition-all-300">
+                                Post a Job
+                            </button>
+                        `;
+                    }
+
                     userAuthLinks.innerHTML = `
+                        ${postJobButton}
                         <span class="font-medium text-gray-700 hidden sm:block">
                             Welcome, <span class="font-bold text-blue-600">${currentUser.username}</span> (${currentUser.type})
                         </span>
-                        <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-full font-medium hover:bg-red-600 transition-colors">
+                        <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-full font-medium hover:bg-red-600 transition-all-300">
                             Logout
                         </button>
                     `;
                     // Add listener to the new logout button
                     document.getElementById('logout-btn').addEventListener('click', handleLogout);
+                    // Add listener to post job button if it exists
+                    if (postJobButton) {
+                        document.getElementById('post-job-nav-btn').addEventListener('click', openPostJobModal);
+                    }
                 } else {
                     userAuthLinks.innerHTML = `
-                        <button id="login-nav-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                        <button id="login-nav-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition-all-300">
                             Login
                         </button>
                     `;
@@ -534,9 +679,13 @@
                 if (user) {
                     currentUser = user;
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    if (currentUser.type === 'Job Seeker') {
+                        appliedJobs = JSON.parse(sessionStorage.getItem('appliedJobs')) || [];
+                    }
                     updateNavbar(true);
                     closeLoginModal();
                     loginForm.reset();
+                    applyFiltersAndSearch(); // Re-render jobs to show applied status
                 } else {
                     showAlert('Invalid Username or Password');
                 }
@@ -547,8 +696,11 @@
              */
             function handleLogout() {
                 currentUser = null;
+                appliedJobs = [];
                 sessionStorage.removeItem('currentUser');
+                sessionStorage.removeItem('appliedJobs');
                 updateNavbar(false);
+                applyFiltersAndSearch(); // Re-render jobs to hide applied status
             }
 
             /**
@@ -567,50 +719,69 @@
 
                 jobs.forEach(job => {
                     const jobCard = document.createElement('div');
-                    jobCard.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col justify-between';
+                    jobCard.className = 'bg-white rounded-xl shadow-lg border border-gray-100 p-6 transition-all-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer flex flex-col justify-between';
                     jobCard.dataset.jobId = job.id;
                     
+                    const isApplied = appliedJobs.includes(job.id);
+                    const applyButtonHtml = isApplied
+                        ? `<button class="w-full bg-gray-300 text-gray-500 py-2 rounded-lg font-medium cursor-not-allowed" disabled>
+                               Applied
+                           </button>`
+                        : `<button class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-all-300 apply-btn">
+                               Apply Now
+                           </button>`;
+                    
+                    const timeAgo = formatDateAgo(job.postedDate);
+
                     jobCard.innerHTML = `
                         <div>
                             <div class="flex items-start justify-between mb-4">
                                 <div class="flex items-center gap-4">
-                                    <img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 rounded-full object-cover border">
+                                    <img src="${job.logo}" alt="${job.company} logo" class="w-14 h-14 rounded-full object-cover border-2 border-gray-50" onerror="this.src='https://placehold.co/100x100/gray/white?text=Err'">
                                     <div>
-                                        <h3 class="text-xl font-bold text-gray-800">${job.title}</h3>
+                                        <h3 class="text-xl font-bold text-gray-900">${job.title}</h3>
                                         <p class="text-gray-600">${job.company}</p>
                                     </div>
                                 </div>
-                                <span class="text-xs font-semibold ${job.type === 'Full-time' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'} px-2.5 py-0.5 rounded-full">${job.type}</span>
+                                <span class="text-xs font-semibold ${job.type === 'Full-time' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'} px-2.5 py-0.5 rounded-full whitespace-nowrap">${job.type}</span>
                             </div>
-                            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                                <span class="flex items-center gap-1">
-                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433.57.57 0 00.28.14l.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" /></svg>
+                            <div class="flex flex-col gap-2 text-sm text-gray-700 mb-4">
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433.57.57 0 00.28.14l.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" /></svg>
                                     ${job.location}
                                 </span>
-                                <span class="flex items-center gap-1">
-                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.75.75 0 01-.318-1.464 3.5 3.5 0 014.622-3.18l.866-1.5a.75.75 0 011.3.75l-.866 1.5.866 1.5a.75.75 0 01-1.3.75l-.866-1.5a3.5 3.5 0 01-4.622 3.18zM16 8a2 2 0 11-4 0 2 2 0 014 0zm4.51 7.326a.75.75 0 01-1.3.75l-.866-1.5-.866 1.5a.75.75 0 01-1.3-.75l.866-1.5-.866-1.5a.75.75 0 011.3-.75l.866 1.5.866-1.5a.75.75 0 011.3.75l-.866 1.5a3.5 3.5 0 014.622 3.18.75.75 0 01-.318 1.464z" /></svg>
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.75.75 0 01-.318-1.464 3.5 3.5 0 014.622-3.18l.866-1.5a.75.75 0 011.3.75l-.866 1.5.866 1.5a.75.75 0 01-1.3.75l-.866-1.5a3.5 3.5 0 01-4.622 3.18zM16 8a2 2 0 11-4 0 2 2 0 014 0zm4.51 7.326a.75.75 0 01-1.3.75l-.866-1.5-.866 1.5a.75.75 0 01-1.3-.75l.866-1.5-.866-1.5a.75.75 0 011.3-.75l.866 1.5.866-1.5a.75.75 0 011.3.75l-.866 1.5a3.5 3.5 0 014.622 3.18.75.75 0 01-.318 1.464z" /></svg>
                                     ${job.experience}
+                                </span>
+                                <span class="flex items-center gap-1.5 font-medium text-green-700">
+                                    <svg class="h-4 w-4 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a.75.75 0 01.75.75v2.53l3.24-3.24a.75.75 0 111.06 1.06l-3.24 3.24H14a.75.75 0 010 1.5H9.25V15a.75.75 0 01-1.5 0V9.25H5a.75.75 0 010-1.5h2.53l-3.24-3.24a.75.75 0 011.06-1.06l3.24 3.24V4.75A.75.75 0 0110 4z" /></svg>
+                                    ${job.salary}
                                 </span>
                             </div>
                             <p class="text-gray-600 text-sm mb-6">${job.description.substring(0, 100)}...</p>
                         </div>
-                        <button class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors apply-btn">
-                            Apply Now
-                        </button>
+                        <div class="flex flex-col gap-2">
+                            ${applyButtonHtml}
+                            <span class="text-xs text-gray-400 text-center">Posted ${timeAgo}</span>
+                        </div>
                     `;
                     
                     // Add click listener to the card (but not the button)
                     jobCard.addEventListener('click', (e) => {
-                        if (!e.target.classList.contains('apply-btn')) {
+                        if (!e.target.closest('.apply-btn') && !isApplied) {
                             openJobModal(job.id);
                         }
                     });
 
                     // Add click listener to the Apply button
-                    jobCard.querySelector('.apply-btn').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Prevent card click
-                        handleApply(job.id);
-                    });
+                    const applyBtn = jobCard.querySelector('.apply-btn');
+                    if (applyBtn) {
+                        applyBtn.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent card click
+                            handleApply(job.id);
+                        });
+                    }
                     
                     jobListingsContainer.appendChild(jobCard);
                 });
@@ -626,7 +797,7 @@
 
                 modalContentDetails.innerHTML = `
                     <div class="flex items-center gap-4 mb-6">
-                        <img src="${job.logo}" alt="${job.company} logo" class="w-16 h-16 rounded-full object-cover border">
+                        <img src="${job.logo}" alt="${job.company} logo" class="w-16 h-16 rounded-full object-cover border" onerror="this.src='https://placehold.co/100x100/gray/white?text=Err'">
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">${job.title}</h2>
                             <p class="text-xl text-gray-700">${job.company}</p>
@@ -645,6 +816,10 @@
                         <span class="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.75.75 0 01-.318-1.464 3.5 3.5 0 014.622-3.18l.866-1.5a.75.75 0 011.3.75l-.866 1.5.866 1.5a.75.75 0 01-1.3.75l-.866-1.5a3.5 3.5 0 01-4.622 3.18zM16 8a2 2 0 11-4 0 2 2 0 014 0zm4.51 7.326a.75.75 0 01-1.3.75l-.866-1.5-.866 1.5a.75.75 0 01-1.3-.75l.866-1.5-.866-1.5a.75.75 0 011.3-.75l.866 1.5.866-1.5a.75.75 0 011.3.75l-.866 1.5a3.5 3.5 0 014.622 3.18.75.75 0 01-.318 1.464z" /></svg>
                             ${job.experience}
+                        </span>
+                        <span class="flex items-center gap-1.5 bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full">
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a.75.75 0 01.75.75v2.53l3.24-3.24a.75.75 0 111.06 1.06l-3.24 3.24H14a.75.75 0 010 1.5H9.25V15a.75.75 0 01-1.5 0V9.25H5a.75.75 0 010-1.5h2.53l-3.24-3.24a.75.75 0 011.06-1.06l3.24 3.24V4.75A.75.75 0 0110 4z" /></svg>
+                            ${job.salary}
                         </span>
                     </div>
 
@@ -668,9 +843,10 @@
                     </div>
                     
                     <div class="mt-8 pt-6 border-t">
-                        <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors" onclick="handleApply(${job.id})">
-                            Apply for this Job
-                        </button>
+                        ${appliedJobs.includes(job.id)
+                            ? `<button class="w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-bold text-lg cursor-not-allowed" disabled>Applied</button>`
+                            : `<button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition-all-300" onclick="handleApply(${job.id})">Apply for this Job</button>`
+                        }
                     </div>
                 `;
 
@@ -691,18 +867,23 @@
              * @param {number} jobId - The ID of the job to apply for
              */
             window.handleApply = function(jobId) {
+                if (appliedJobs.includes(jobId)) return; // Already applied
+
                 const job = allJobs.find(j => j.id === jobId);
                 if (currentUser) {
                     if (currentUser.type === 'Job Seeker') {
+                        appliedJobs.push(jobId);
+                        sessionStorage.setItem('appliedJobs', JSON.stringify(appliedJobs));
                         showAlert(`Applied for ${job.title} as ${currentUser.username}!`, 'Application Successful');
+                        applyFiltersAndSearch(); // Re-render to show 'Applied'
+                        if (!jobDetailModal.classList.contains('hidden')) {
+                            closeJobModal(); // Close job detail if open
+                        }
                     } else {
                         showAlert('Only "Job Seeker" accounts can apply for jobs.', 'Application Info');
                     }
                 } else {
                     showAlert('You must be logged in as a Job Seeker to apply.', 'Login Required');
-                    if (!loginModal.classList.contains('hidden')) {
-                        closeLoginModal(); // Close login if open
-                    }
                     if (!jobDetailModal.classList.contains('hidden')) {
                         closeJobModal(); // Close job detail if open
                     }
@@ -716,17 +897,16 @@
              */
             function applyFiltersAndSearch() {
                 const searchTerm = searchInput.value.toLowerCase();
-                const searchTermMobile = searchInputMobile.value.toLowerCase();
-                const combinedSearch = searchTerm || searchTermMobile;
                 
                 const type = filterType.value;
                 const location = filterLocation.value;
                 const experience = filterExperience.value;
 
                 const filteredJobs = allJobs.filter(job => {
-                    const matchesSearch = job.title.toLowerCase().includes(combinedSearch) || 
-                                          job.company.toLowerCase().includes(combinedSearch) ||
-                                          job.description.toLowerCase().includes(combinedSearch);
+                    const matchesSearch = job.title.toLowerCase().includes(searchTerm) || 
+                                          job.company.toLowerCase().includes(searchTerm) ||
+                                          job.description.toLowerCase().includes(searchTerm) ||
+                                          job.salary.toLowerCase().includes(searchTerm);
                     
                     const matchesType = type === 'all' || job.type === type;
                     const matchesLocation = location === 'all' || job.location === location;
@@ -743,11 +923,41 @@
              */
             function clearFilters() {
                 searchInput.value = '';
-                searchInputMobile.value = '';
                 filterType.value = 'all';
                 filterLocation.value = 'all';
                 filterExperience.value = 'all';
-                renderJobs(allJobs);
+                heroFiltersDropdown.classList.add('hidden'); // Close dropdown
+                applyFiltersAndSearch();
+            }
+ 
+            /**
+             * Handles posting a new job
+             * @param {Event} e - The form submit event
+             */
+            function handlePostJob(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                
+                const newJob = {
+                    id: Date.now(), // Use timestamp for a unique ID
+                    title: formData.get('title'),
+                    company: formData.get('company'),
+                    logo: `https://placehold.co/100x100/gray/white?text=${formData.get('company').charAt(0)}`,
+                    location: formData.get('location'),
+                    type: formData.get('type'),
+                    experience: formData.get('experience'),
+                    salary: formData.get('salary'),
+                    postedDate: new Date().toISOString(),
+                    description: formData.get('description'),
+                    responsibilities: formData.get('responsibilities').split(',').map(s => s.trim()),
+                    qualifications: formData.get('qualifications').split(',').map(s => s.trim())
+                };
+
+                allJobs.unshift(newJob); // Add new job to the beginning of the list
+                postJobForm.reset();
+                closePostJobModal();
+                applyFiltersAndSearch(); // Refresh the job list
+                showAlert('Job posted successfully!', 'Success');
             }
 
             // --- 4. Modal Helper Functions ---
@@ -755,9 +965,15 @@
             function openLoginModal() {
                 loginModal.classList.remove('hidden');
             }
-
             function closeLoginModal() {
                 loginModal.classList.add('hidden');
+            }
+
+            function openPostJobModal() {
+                postJobModal.classList.remove('hidden');
+            }
+            function closePostJobModal() {
+                postJobModal.classList.add('hidden');
             }
 
             function showAlert(message, title = 'Alert') {
@@ -765,9 +981,22 @@
                 alertMessage.textContent = message;
                 alertModal.classList.remove('hidden');
             }
-
             function closeAlert() {
                 alertModal.classList.add('hidden');
+            }
+
+            /**
+             * Formats an ISO date string to "X days ago"
+             * @param {string} isoString - The ISO date string
+             */
+            function formatDateAgo(isoString) {
+                const date = new Date(isoString);
+                const diff = Date.now() - date.getTime();
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                
+                if (days === 0) return 'today';
+                if (days === 1) return '1 day ago';
+                return `${days} days ago`;
             }
 
             // --- 5. Event Listeners ---
@@ -780,6 +1009,10 @@
                 // Login Modal
                 closeLoginModalBtn.addEventListener('click', closeLoginModal);
                 loginForm.addEventListener('submit', handleLogin);
+
+                // Post Job Modal
+                closePostJobModalBtn.addEventListener('click', closePostJobModal);
+                postJobForm.addEventListener('submit', handlePostJob);
                 
                 // Job Detail Modal
                 modalBackdrop.addEventListener('click', closeJobModal);
@@ -790,7 +1023,9 @@
 
                 // Filters and Search
                 searchInput.addEventListener('input', applyFiltersAndSearch);
-                searchInputMobile.addEventListener('input', applyFiltersAndSearch);
+                heroFilterBtn.addEventListener('click', () => {
+                    heroFiltersDropdown.classList.toggle('hidden');
+                });
                 filterType.addEventListener('change', applyFiltersAndSearch);
                 filterLocation.addEventListener('change', applyFiltersAndSearch);
                 filterExperience.addEventListener('change', applyFiltersAndSearch);
